@@ -65,4 +65,4 @@ Example:
 
 `Pablo | shell ping facebook.com`
 
-![Sample discord Command Execute](/Images/disc_cmd_sample.png "sample in discord channel")
+![Sample discord Command Execute](/Images/disc_cmd_sample.PNG "sample in discord channel")
