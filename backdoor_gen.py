@@ -45,15 +45,22 @@ if __name__ == '__main__':
 
 	# optional arguments
 	parser.add_argument('--icon', '-i', type=str, required=False, help='adds icon to the output exe file')
+	parser.add_argument('--debug', '-d', action='store_true', help='generates a console app instead of background process')
+	parser.set_defaults(debug=False)
 	args = parser.parse_args()
 
 	# assign the tokens, nick, etc. to the file
 	replace_arguments(str(args.token), str(args.bot_name))
 
+	arguments = []
 	if (args.icon != None):
-		PyInstaller.__main__.run(['prototype.py', '--onefile', f'--icon {args.icon}'])
-	else:
-		PyInstaller.__main__.run(['prototype.py', '--onefile'])
+		arguments.append(f'--icon {args.icon}')
+
+	if (not args.debug):
+		arguments.append('--noconsole')
+
+	# run the pyinstaller app
+	PyInstaller.__main__.run(['prototype.py', '--onefile'] + arguments)
 
 	# reverts back the file state
 	revert_file()
