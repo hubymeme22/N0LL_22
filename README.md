@@ -54,7 +54,7 @@ Debug option for running the binary as console app instead of background process
 
 `C:\> python3 backdoor_gen.py <token> <bot_nickname> <file_name> -d`
 
-The generated executable on the dist folder now can be executed on a target computer (of course, with internet connection).
+The executable will be generated on the current path with specified filename.
 
 # Executing command on the server
 Since the bots will be using one token, different bots are identified using their `bot_nickname` with this, the bot will know if it's their turn to execute commands. Executing command in the server will look like this:
