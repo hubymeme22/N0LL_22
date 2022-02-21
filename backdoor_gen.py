@@ -50,7 +50,7 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 
 	# assign the tokens, nick, etc. to the file
-	replace_arguments(str(args.token), str(args.bot_name))
+	replace_arguments(args.token, args.bot_name)
 
 	arguments = []
 	if (args.icon != None):
