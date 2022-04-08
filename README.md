@@ -1,6 +1,6 @@
 # N0LL_22
 
-A simple discord bot that acts as remote access trojan and backdoor for Windows. This backdoor is controlled remotely using a discord chat, so the discord itself will act as the command and control server, making it easier and portable (can be controlled anywhere as long as you do have your internet connection).
+A simple discord bot that acts as remote access trojan. This backdoor is controlled remotely using a discord chat, so the discord itself will act as the command and control server, making it easier and portable (can be controlled anywhere as long as you do have your internet connection).
 
 Setup:
 
