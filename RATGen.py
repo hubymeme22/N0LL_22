@@ -7,8 +7,8 @@ original_file_bytes = b''
 
 
 def check_file():
-	original_file_bytes = open('prototype.py', 'r').read()
-	checking_file_bytes = open('./backup/prototype.py', 'r').read()
+	original_file_bytes = open('prototype.py', 'rb').read()
+	checking_file_bytes = open('./backup/prototype.py', 'rb').read()
 	if (original_file_bytes == checking_file_bytes):
 		print ('[+] File state is good...')
 	else:
