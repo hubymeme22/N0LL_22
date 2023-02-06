@@ -14,7 +14,8 @@ nickname = '<nicknamehere>'
 
 # discord variables (setting up prefix depending on nickname)
 # to avoid multiple execution of command
-bot = commands.Bot(command_prefix=(nickname + ' | '))
+intent = discord.Intents.all()
+bot = commands.Bot(command_prefix=(nickname + ' | '), intents=intent)
 token = '<tokenhere>'
 
 # for keeping track of the directory configuraton files
