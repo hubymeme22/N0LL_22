@@ -96,16 +96,14 @@ async def ping(ctx, arg1):
 )
 async def shell(ctx, *args):
 	try:
-		command_shell = list(args)
+		command_shell = ' '.join(list(args))
 		await ctx.send(f'[CommandBot {nickname}] Execute shell { command_shell }')
 
 		# get the output with subprocess
 		proc = subprocess.Popen(command_shell, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-		await ctx.send(f'Called subprocess....')
-
 		output, error = proc.communicate()
 		await ctx.send(f'[CommandBot {nickname}] Shell Output:')
-		
+
 		# limits the size of the output (limits 1500 texts)
 		output_to_be_sent = limiter(output.decode(), 1500)
 		for message in output_to_be_sent:
